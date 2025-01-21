@@ -71,7 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /************  TIMER  ************/
 
-  let timer;
+  setInterval(timeRemainingContainer.innerText = quiz.timeRemaining, 2000); 
+
+  
 
   /************  EVENT LISTENERS  ************/
 
@@ -91,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     questionContainer.innerText = "";
     choiceContainer.innerHTML = "";
 
-   
     const question = quiz.getQuestion();
     question.shuffleChoices();
 
@@ -114,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     questionCount.innerText = `Question ${quiz.currentQuestionIndex + 1} of ${
       quiz.questions.length
     }`;
-
 
     // 4. Create and display new radio input element with a label for each choice.
     // Loop through the current question `choices`.
@@ -163,25 +163,23 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show the next question by calling the function `showQuestion()`.
 
     //aqui igual hay q ser mas específicos con input name or type o algo
-    const choices = document.querySelectorAll("input[name='choice'] ")
+    const choices = document.querySelectorAll("input[name='choice'] ");
     choices.forEach(function (choice) {
       if (choice.checked) {
         selectedAnswer = choice.value;
-      } 
-       });
-      if (selectedAnswer) {
-        if (quiz.checkAnswer(selectedAnswer)) {
-          quiz.moveToNextQuestion();
-          showQuestion();
-        } 
-        else  {
-          alert("Incorrect answer!"); 
-          quiz.moveToNextQuestion();
-          showQuestion();  
-      } 
+      }
+    });
+    if (selectedAnswer) {
+      if (quiz.checkAnswer(selectedAnswer)) {
+        quiz.moveToNextQuestion();
+        showQuestion();
+      } else {
+        alert("Incorrect answer!");
+        quiz.moveToNextQuestion();
+        showQuestion();
+      }
     }
-    }
-  
+  }
 
   function showResults() {
     // YOUR CODE HERE:
@@ -196,4 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const score = quiz.correctAnswers;
     resultContainer.innerText = `You scored ${score} out of ${quiz.questions.length} correct answers!`; // This value is hardcoded as a placeholder
   }
+
+  const restartButton = document.querySelector("#restartButton");
+  restartButton.addEventListener("click", function () {
+    endView.style.display = "none";
+    quizView.style.display = "block";
+    quiz.resetQuiz();
+    showQuestion();
+  });
 });
