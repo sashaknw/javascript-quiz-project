@@ -22,7 +22,12 @@ class Quiz {
     }
 
     checkAnswer(answer) {
-        this.correctAnswers++;
+        const correctAnswer = this.getQuestion().answer;
+        if ( answer === correctAnswer){
+            this.correctAnswers++;
+            return true;
+        }
+        return false;
     }
 
     hasEnded() {
