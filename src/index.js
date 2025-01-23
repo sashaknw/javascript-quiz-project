@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // End view elements
   const resultContainer = document.querySelector("#result");
+  const restartButton = document.querySelector("#restartButton");
 
   /************  SET VISIBILITY OF VIEWS  ************/
 
@@ -68,22 +69,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show first question
   showQuestion();
+  startTimer();
+
 
   /************  TIMER  ************/
+//let timerInterval;
 
-  setInterval(timeRemainingContainer.innerText = quiz.timeRemaining, 2000); 
 
+function startTimer() {
+   timerInterval = setInterval(() => {
+    if (quiz.timeRemaining > 0) {
+      quiz.timeRemaining--;
+      const minutes = Math.floor(quiz.timeRemaining / 60)
+        .toString()
+        .padStart(2, "0");
+      const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+      timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+    if (quiz.timeRemaining === 110) {
+      showToast("You're doing great! 🚀"); 
+    }
+
+    } else {
+      clearInterval(timerInterval);
+      showResults();
+    }
+  }, 1000);
+}
+   function showToast(message) {
+     console.log("showToast called!");
+
+     const toast = document.createElement("div");
+     toast.classList.add("toast");
+
+     const toastMessage = document.createElement("div");
+     toastMessage.classList.add("toast-message");
+     toastMessage.innerText = message;
+
+     toast.appendChild(toastMessage);
+
+     document.body.appendChild(toast);
+     toast.classList.add("show");
+
+     setTimeout(() => {
+       toast.classList.remove("show");
+       setTimeout(() => {
+         document.body.removeChild(toast);
+          }, 900);
+    }, 3000);
+
+   }
   
 
+
+  
   /************  EVENT LISTENERS  ************/
 
   nextButton.addEventListener("click", nextButtonHandler);
+ 
+  restartButton.addEventListener("click", function () {
+    endView.style.display = "none";
+    quizView.style.display = "block";
+    quiz.resetQuiz();
+    quiz.timeRemaining = quizDuration;
+    showQuestion();
+    startTimer();
+  });
 
   /************  FUNCTIONS  ************/
-
-  // showQuestion() - Displays the current question and its choices
-  // nextButtonHandler() - Handles the click on the next button
-  // showResults() - Displays the end view and the quiz results
 
   function showQuestion() {
     if (quiz.hasEnded()) {
@@ -106,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update the green progress bar (div#progressBar) width so that it shows the percentage of questions answered
 
     progressBar.style.width = `${
-      ((quiz.currentQuestionIndex + 1) / quiz.questions.length) * 100
+      ((quiz.currentQuestionIndex ) / quiz.questions.length) * 100
     }%`;
 
     // 3. Update the question count text
@@ -174,16 +226,16 @@ document.addEventListener("DOMContentLoaded", () => {
         quiz.moveToNextQuestion();
         showQuestion();
       } else {
-        alert("Incorrect answer!");
-        quiz.moveToNextQuestion();
-        showQuestion();
+        alert("Incorrect answer!"); 
       }
     }
   }
+  
 
   function showResults() {
     // YOUR CODE HERE:
     //
+    clearInterval(timerInterval);
     // 1. Hide the quiz view (div#quizView)
     quizView.style.display = "none";
 
@@ -195,11 +247,5 @@ document.addEventListener("DOMContentLoaded", () => {
     resultContainer.innerText = `You scored ${score} out of ${quiz.questions.length} correct answers!`; // This value is hardcoded as a placeholder
   }
 
-  const restartButton = document.querySelector("#restartButton");
-  restartButton.addEventListener("click", function () {
-    endView.style.display = "none";
-    quizView.style.display = "block";
-    quiz.resetQuiz();
-    showQuestion();
-  });
+  
 });

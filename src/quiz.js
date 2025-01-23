@@ -60,7 +60,7 @@ const sumDifficulty = this.questions.reduce(function(sum, question) {
         this.correctAnswers = 0;
         this.currentQuestionIndex = 0;
         this.shuffleQuestions();
-        //this.timeRemaining = this.timeLimit;
+        this.timeRemaining = this.timeLimit;
     }
 
 }
